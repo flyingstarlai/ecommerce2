@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load staticfiles %}
+
+
+{% block head_title %}Welcome | {{ block.super }}{% endblock %}
+
+<style>
+{% block style %}
+.navbar-static-top {
+	margin-bottom: 0px !important;
+}
+.jumbotron {
+	background-color:#5ACDFF;
+	color: #000;
+	{% if featured_image.make_image_background %}
+	background-image: url("{{ featured_image.image.url }}");
+	background-repeat: no-repeat;
+	background-color: #000;
+	background-size: cover;
+	background-position-y: -272px;
+	{% endif %}
+}
+{% endblock %}
+</style>
+
+
+     
+{% block jumbotron %}
+
+
+
+<div class="jumbotron">
+ <div class="container">
+	<div class="row">
+		<div class='col-sm-6'>
+		<h1>Jual Es Batu</h1>
+		<p>Berminat mengajukan diri menjadi distributor resmi es batu kami? Silahkan menghubungi konsultant kami di
+			Planet
+			Namec!</p>
+		<p>
+		<a class="btn btn-lg btn-primary" href="" role="button">Join Us &raquo;</a>
+		</p>
+		</div>
+		<div class='col-sm-6' >
+			<iframe width="560" height="315" src="https://www.youtube.com/embed/ng506xxOa3I" frameborder="0" allowfullscreen></iframe>
+
+ 		</div>
+		</div>
+	</div>
+ </div>
+{% endblock %}
+
+
+
+
+{% block content %}
+{% if request.user.is_authenticated %}
+<h1>Welcome faggots!</h1>
+    {% if queryset %}
+    <h3>How are you staff?</h3>
+    <table class="table">
+    {% for instance in queryset %}
+        <tr><td>{{ forloop.counter }}</td><td>{{ instance }}</td><td>{{ instance.full_name }}</td>
+            <td>{{ instance.timestamp|timesince }} ago</td></tr>
+    {% endfor %}
+    </table>
+    {% endif %}
+{% else %}
+<div class="row">
+
+  <div class="col-sm-3 pull-right">
+  	
+			<p class='lead text-align-center'>{{ title }}</p>
+
+			<form method='POST' action=''>{% csrf_token %}
+			{{ form|crispy }}
+
+			<input class='btn btn-primary' type='submit' value='Sign Up' />
+
+			</form>
+	</div>
+
+	<div class='col-sm-3'>
+<p class='lead text-align-center'>Django &amp; Bootstrap</p>
+			<img src='{% static "img/umaru.jpg" %}' class='img-responsive' />
+</div>
+
+<div class='col-sm-3'>
+<p class='lead text-align-center'>Created for Starters.
+<br/>
+<span class='fa-stack fa-lg fa-5x'>
+<i class='fa fa-comment-o fa-stack-2x'></i>
+<i style='color:yellow;' class="fa fa-bolt fa-stack-1x"></i>
+
+</span>
+</p>
+
+</div>
+
+<div class='col-sm-3'>
+<p class='lead text-align-center'>Always Open Source <br/><br/>
+
+<span class="fa-stack fa-lg fa-5x">
+<i class="fa fa-circle-o-notch fa-stack-2x "></i>
+  <!-- <i class="fa fa-square-o fa-stack-2x"></i> -->
+  <i class="fa fa-github fa-stack-1x"></i>
+</span>
+</p>
+
+
+</div>
+
+
+</div>
+{% endif %}
+
+{% endblock %}
+
