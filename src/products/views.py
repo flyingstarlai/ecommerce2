@@ -9,9 +9,10 @@ from django.http import Http404
 
 from .forms import VariationInventoryFormSet
 from .models import Product, Variation
+from .mixins import StaffRequiredMixin
 
 
-class VariationListView(ListView):
+class VariationListView(StaffRequiredMixin, ListView):
     model = Variation
     queryset = Variation.objects.all()
 
