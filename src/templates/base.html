@@ -23,6 +23,19 @@
 
   {% include 'navbar.html' %}
 
+  {% if messages %}
+  <div class="container">
+    <div class="alert alert-success text-align-center alert-dismissible">
+<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      {% for message in messages %}
+      <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p><br/>
+      {% endfor %}
+
+    </div>
+  </div>
+
+  {% endif %}
+
   {% block jumbotron %}
   {% endblock %}
     <div class="container">
@@ -34,6 +47,12 @@
     </div> <!-- /container -->
     {% include 'javascript.html' %}
 
+    <script>
+      $(document).ready(function(){
+        {% block jquery %}
+        {% endblock %}
+      });
+    </script>
 
   </body>
 </html>
