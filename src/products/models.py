@@ -18,15 +18,27 @@ class ProductManager(models.Manager):
     def all(self, *args, **kwargs):
         return self.get_queryset().active()
 
+    def get_related(self, instance):
+        products_one = self.all().filter(categories__in=instance.categories.all())
+        products_two = self.all().filter(default=instance.default)
+        qs = (products_one | products_two).distinct()
+        return qs
+
 
 class Product(models.Model):
     title = models.CharField(max_length=120)
     description = models.TextField(blank=True, null=True)
     price = models.DecimalField(decimal_places=2, max_digits=20)
     active = models.BooleanField(default=True)
-    # slug
-    # inventory
-
+    categories = models.ManyToManyField('Category', blank=True)
+    default = models.ForeignKey('Category', related_name='default_category', null=True, blank=True)
+    '''
+    The related_name attribute specifies the name of the
+    reverse relation from the User model back to your model.
+    If you don't specify a related_name, Django automatically creates one
+    using the name of your model with the suffix _set,
+    for instance User.map_set.all().
+    '''
     objects = ProductManager()
 
     def __unicode__(self):
@@ -34,6 +46,12 @@ class Product(models.Model):
 
     def get_absolute_url(self):
         return reverse("product_detail", kwargs={'pk': self.pk})
+
+    def get_image_url(self):
+        img = self.productimage_set.first()
+        if img:
+            return img.image.url
+        return img  # None
 
 
 class Variation(models.Model):
@@ -92,3 +110,17 @@ class ProductImage(models.Model):
 
 
 # Product Category
+class Category(models.Model):
+    title = models.CharField(max_length=120, unique=True)
+    slug = models.SlugField(unique=True)
+    description = models.TextField(null=True, blank=True)
+    active = models.BooleanField(default=True)
+    timestamp = models.DateTimeField(auto_now_add=True, auto_now=False)
+
+    def __unicode__(self):
+        return self.title
+
+    def get_absolute_url(self):
+        return reverse("category_detail", kwargs={'slug': self.slug})
+
+

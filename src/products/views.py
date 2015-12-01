@@ -8,8 +8,27 @@ from django.http import Http404
 # Create your views here.
 
 from .forms import VariationInventoryFormSet
-from .models import Product, Variation
+from .models import Product, Variation, Category
 from .mixins import StaffRequiredMixin
+
+
+class CategoryListView(ListView):
+    model = Category
+    queryset = Category.objects.all()
+    template_name = "products/product_list.html"
+
+
+class CategoryDetailView(DetailView):
+    model = Category
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(CategoryDetailView, self).get_context_data(*args, **kwargs)
+        obj = self.get_object()
+        product_set = obj.product_set.all()
+        default_category = obj.default_category.all()
+        products = (product_set | default_category).distinct()
+        context['products'] = products
+        return context
 
 
 class VariationListView(StaffRequiredMixin, ListView):
@@ -81,6 +100,15 @@ class ProductListView(ListView):
 #     }
 #     return render(request, template, context)
 
+import random
+
+
 class ProductDetailView(DetailView):
     model = Product
     # template_name = '<appname>/<modelname>_detail.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(ProductDetailView, self).get_context_data(*args, **kwargs)
+        instance = self.get_object()
+        context["related"] = sorted(Product.objects.get_related(instance)[:2], key=lambda x: random.random())
+        return context
