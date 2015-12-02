@@ -3,17 +3,22 @@ from .forms import ContactForm, SignUpForm
 from django.core.mail import send_mail
 from django.conf import settings
 from .models import SignUp
-from products.models import ProductFeatured
+from products.models import ProductFeatured, Product
 
 
 def home(request):
     title = 'Sign Up Now'
+
     featured_image = ProductFeatured.objects.filter(active=True).order_by("?").first()
+    products = Product.objects.all().order_by("?")[:6]
+    products2 = Product.objects.all().order_by("?")[:6]
+
     form = SignUpForm(request.POST or None)
     context = {
         'title': title,
         'form': form,
         'featured_image': featured_image,
+        'products': products,
     }
 
     if form.is_valid():
@@ -27,11 +32,11 @@ def home(request):
             'title': 'thank you %s' % instance.full_name,
         }
 
-    if request.user.is_authenticated and request.user.is_staff:
-        queryset = SignUp.objects.all().order_by('-timestamp')
-        context = {
-            'queryset': queryset,
-        }
+    # if request.user.is_authenticated and request.user.is_staff:
+    #     queryset = SignUp.objects.all().order_by('-timestamp')
+    #     context = {
+    #         'queryset': queryset,
+    #     }
 
     return render(request, "home.html", context)
 
