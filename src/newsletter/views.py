@@ -3,14 +3,17 @@ from .forms import ContactForm, SignUpForm
 from django.core.mail import send_mail
 from django.conf import settings
 from .models import SignUp
+from products.models import ProductFeatured
 
 
 def home(request):
     title = 'Sign Up Now'
+    featured_image = ProductFeatured.objects.filter(active=True).order_by("?").first()
     form = SignUpForm(request.POST or None)
     context = {
         'title': title,
         'form': form,
+        'featured_image': featured_image,
     }
 
     if form.is_valid():

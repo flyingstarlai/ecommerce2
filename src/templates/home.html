@@ -12,13 +12,13 @@
 }
 .jumbotron {
 	background-color:#5ACDFF;
-	color: #000;
 	{% if featured_image.make_image_background %}
-	background-image: url("{{ featured_image.image.url }}");
-	background-repeat: no-repeat;
+	background: url("{{ featured_image.image.url }}") 0px -272px no-repeat;
 	background-color: #000;
 	background-size: cover;
-	background-position-y: -272px;
+    <!--{% if featured_image.text_css_color %}-->
+    <!--color: #{{featured_image.text_css_color}};-->
+    <!--{% endif %}-->
 	{% endif %}
 }
 {% endblock %}
@@ -28,8 +28,30 @@
      
 {% block jumbotron %}
 
+{% if featured_image %}
+<div class="jumbotron">
+ <div class="container">
+	<div class="row">
+		<div class='col-sm-12 text-center {% if featured_image.text_right %} pull-right {% endif %}'>
+		<h1>{{ featured_image.title }}</h1>
+		<p>{{ featured_image.text }}</p>
+		<p>
+		<a class="btn btn-lg btn-primary" href="{{ featured_image.product.get_absolute_url}}" role="button">More
+            Details</a>
+		</p>
+		</div>
+         {% if not featured_image.make_image_background %}
+		<div class='col-sm-6' >
 
+		    <img src="{{ featured_image.image.url }}" class="img-responsive" />
 
+ 		</div>
+        {% endif %}
+		</div>
+	</div>
+ </div>
+
+{% else %}
 <div class="jumbotron">
  <div class="container">
 	<div class="row">
@@ -49,6 +71,8 @@
 		</div>
 	</div>
  </div>
+
+{% endif %}
 {% endblock %}
 
 

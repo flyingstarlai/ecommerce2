@@ -7,7 +7,7 @@ function setPrice() {
     var price = $(".variation_select option:selected").attr("data-price")
     var sale_price = $(".variation_select option:selected").attr("data-sale-price")
     if(sale_price != "" && sale_price != "None" && sale_price != null) {
-      $("#price").html("<h3>"+sale_price +" <small class='og-price'>Original: "+ price +
+      $("#price").html("<h3>"+sale_price +" <small class='og-price'> "+ price +
       "</small></h3>");
         <!--$("#price").html("<h3>"+sale_price + " <small style='color:red;text-decoration:line-through;'>Original-->
         <!--price:" + price + "</small></h3>");-->
@@ -45,7 +45,7 @@ $(".variation_select").change(function(){
 
         <select class="form-control variation_select">
             {% for vari_obj in object.variation_set.all %}
-            <option data-price="{{ vari_obj.price }}" data-sale-price="{{ vari_obj.sale_price }}"
+            <option data-price="{{ vari_obj.price}}" data-sale-price="{{ vari_obj.sale_price }}"
                     value="{{ vari_obj.id }}">{{ vari_obj }}</option>
             {% endfor %}
         </select>
@@ -73,13 +73,7 @@ $(".variation_select").change(function(){
         <h3>Related Items</h3>
         {% for product in related %}
         <div class="col-xs-6">
-            <div class="thumbnail text-center">
-            <h3> <a href='{{ product.get_absolute_url }}'>{{ product.title }}</a><br/></h3>
-            {% if product.get_image_url %}
-            <a href='{{ product.get_absolute_url }}'><img id="img" class="img-responsive"
-                                                          src="{{ product.get_image_url }}" /></a>
-            {% endif %}
-            </div>
+       {% include 'products/product_thumbnail.html' with product=product price="True" %}
         </div>
         {% cycle '' '</div> <div class="row">' %}
         {% endfor %}
