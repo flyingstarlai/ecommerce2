@@ -40,27 +40,33 @@ $(".variation_select").change(function(){
 
     <!-- Product sidebar -->
     <div class="col-sm-4">
+        <form method="get" action="{% url 'cart' %}">
         {% if object.variation_set.count > 1 %}
-        <h3 id="price">{{ object.variation_set.first.price }} NT</h3>
-
-        <select class="form-control variation_select">
-            {% for vari_obj in object.variation_set.all %}
-            <option data-price="{{ vari_obj.price}}" data-sale-price="{{ vari_obj.sale_price }}"
-                    value="{{ vari_obj.id }}">{{ vari_obj }}</option>
-            {% endfor %}
-        </select>
+            <h3 id="price">{{ object.variation_set.first.price }} NT</h3>
+            <select name="item" class="form-control variation_select">
+                {% for vari_obj in object.variation_set.all %}
+                <option  data-price="{{ vari_obj.price}}" data-sale-price="{{ vari_obj.sale_price }}"
+                        value="{{ vari_obj.id }}">{{ vari_obj }}</option>
+                {% endfor %}
+            </select>
         {% else %}
-        <h3 id="price">
-            {% if object.variation_set.first.sale_price %}
-            {{ object.variation_set.first.sale_price }}
-            <small class="og-price">{{ object.variation_set.first.price }}</small>
-            {% else %}
-            {{ object.variation_set.first.price }}
-            {% endif %}
-        </h3>
+            <input type="hidden" name="item" value="{{ object.variation_set.first.id }}"/>
+            <h3 id="price">
+                {% if object.variation_set.first.sale_price %}
+                    {{ object.variation_set.first.sale_price }}
+                    <small class="og-price">{{ object.variation_set.first.price }}</small>
+                {% else %}
+                    {{ object.variation_set.first.price }}
+                {% endif %}
+            </h3>
+
         {% endif %}
+         <br />
+        <input class="form-control" type="number" name="qty" value="1">
         <br/>
-        <a href="#">Add to Cart</a>
+        <input type="submit" value="Add to Cart" class="btn btn-default" href="{% url 'cart' %}"/>
+        </form>
+
         <br/>
         <hr/>
         <p>

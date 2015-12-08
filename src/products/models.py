@@ -25,7 +25,6 @@ class ProductManager(models.Manager):
         qs = (products_one | products_two).exclude(id=instance.id).distinct()
         return qs
 
-
 class Product(models.Model):
     title = models.CharField(max_length=120)
     description = models.TextField(blank=True, null=True)
@@ -75,7 +74,7 @@ class Variation(models.Model):
     def get_html_price(self):
         if self.sale_price is not None:
             html_text = '<span class="sale-price">%s </span><span class="og-price">%s</span>' % (self.sale_price,
-                                                                                                self.price)
+                                                                                                 self.price)
             return mark_safe(html_text)
         else:
             html_text = '<span class="price">%s</span>' % self.price
@@ -83,6 +82,15 @@ class Variation(models.Model):
 
     def get_absolute_url(self):
         return self.product.get_absolute_url()
+
+    def add_to_cart(self):
+        return "%s?item=%s&qty=1" % (reverse('cart'), self.id)
+
+    def remove_from_cart(self):
+        return "%s?item=%s&qty=1&del=True" % (reverse('cart'), self.id)
+
+    def get_title(self):
+        return "%s - %s" % (self.product.title, self.title)
 
 
 def product_post_saved_receiver(sender, instance, created, *args, **kwargs):
@@ -105,6 +113,7 @@ def image_upload_to(instance, filename):
     file_extension = filename.split(".")[1]
     new_filename = "%s-%s.%s" % (slug, instance.id, file_extension)
     return "products/%s/%s" % (slug, new_filename)
+
 
 # Product Image
 # sudo yum install --assumeyes libjpeg-devel
@@ -155,5 +164,3 @@ class ProductFeatured(models.Model):
 
     def __unicode__(self):
         return self.product.title
-
-
